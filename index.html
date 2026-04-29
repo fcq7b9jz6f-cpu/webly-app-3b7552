@@ -4,7 +4,13 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>موقع أم كلثوم</title>
-<style>@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;700&display=swap');
+<meta name="description" content="موقع أم كلثوم — موقع منشور بواسطة Webly" />
+<style>
+  * { box-sizing: border-box; }
+  html, body, #root { min-height: 100%; margin: 0; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", Cairo, Tahoma, sans-serif; }
+  .webly-fallback { min-height: 100vh; display: grid; place-items: center; padding: 32px; text-align: center; }
+  @import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;700&display=swap');
 
 :root {
   --primary-gold: #c5a059;
@@ -167,24 +173,146 @@ blockquote {
   .hero-content h1 { font-size: 3rem; }
   .section { padding: 40px 5%; }
 }
+
 </style>
 <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
 <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 </head>
 <body>
-<div id="root"></div>
+<div id="root"><main class="webly-fallback">جارٍ تحميل الموقع...</main></div>
 <script type="text/babel" data-presets="react">
-import React from "react";
-import Hero from "./Hero";
-import Biography from "./Biography";
-import Timeline from "./Timeline";
-import Songs from "./Songs";
-import Legacy from "./Legacy";
-import Footer from "./Footer";
-import "./styles.css";
+const { useState, useEffect, useRef, useMemo, useCallback, useReducer, useContext, createContext, Fragment } = React;
 
-var App = function App() {
+function Hero() {
+  return (
+    <div className="hero">
+      <div className="hero-overlay"></div>
+      <div className="hero-content">
+        <h1>أم كلثوم</h1>
+        <p className="subtitle">سيدة الغناء العربي وكوكب الشرق</p>
+        <div className="divider"></div>
+        <p className="brief">صوتٌ تشكّل من طين الأرض المصرية، ليُصبح أيقونة خالدة في وجدان العرب.</p>
+      </div>
+    </div>
+  );
+}
+
+
+function Biography() {
+  return (
+    <section className="section bio-section">
+      <h2 className="title-gold">رحلة من طماي الزهايرة</h2>
+      <div className="bio-content">
+        <p>
+          ولدت فاطمة إبراهيم السيد البلتاجي، التي عُرفت لاحقاً باسم "أم كلثوم"، في قرية طماي الزهايرة بمحافظة الدقهلية. نشأت في أسرة ريفية بسيطة، وكان والدها إماماً للمسجد، وهو الذي اكتشف موهبتها الفطرية حينما كانت تستمع إليه وهو يعلم شقيقها الإنشاد، فبدأت تقلد ما تسمع بصوت يفيض عذوبة وقوة.
+        </p>
+        <p>
+          كانت بداياتها الفنية بزي صبي، حيث كان والدها يلبسها العقال والقفطان لتنشد معه في الموالد والقرى المحيطة. هاتفها القدر حين التقت بالشيخ أبو العلا محمد والموسيقار زكريا أحمد، اللذين أقنعا والدها بضرورة الانتقال إلى القاهرة عام 1923، لتبدأ الفتاة الريفية رحلة التحول من منشدة قرى إلى "الهرم الرابع" لمصر.
+        </p>
+        <p>
+          في القاهرة، صقلت موهبتها وتتلمذت على يد كبار الملحنين، واهتمت بتثقيف نفسها أدبياً وشعرياً، مما جعلها تختار كلمات أغانيها من عيون الشعر العربي، فاتصلت بأمير الشعراء أحمد شوقي، وبدأت حفلاتها الغنائية الشهرية التي كانت توقف حركة المرور في عواصم العرب من المحيط إلى الخليج.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+
+const milstones = [
+  { year: "1898", event: "الميلاد في طماي الزهايرة (التاريخ المرجح)." },
+  { year: "1923", event: "الانتقال النهائي إلى القاهرة وبداية الاحتراف." },
+  { year: "1926", event: "تأسيس أول تخت موسيقي خاص بها بدلاً من البطانة." },
+  { year: "1934", event: "افتتاح الإذاعة المصرية بصوتها كأول فنانة تغني فيها." },
+  { year: "1944", event: "تكريم الملك فاروق لها بمنحها وسام الكمال." },
+  { year: "1954", event: "الزواج من الدكتور حسن الحفناوي." },
+  { year: "1964", event: "لقاء السحاب لأول مرة مع محمد عبد الوهاب في 'إنت عمري'." },
+  { year: "1967", event: "بدء جولاتها العالمية لدعم المجهود الحربي بعد النكسة." },
+  { year: "1973", event: "تسجيل آخر أغانيها 'حكم علينا الهوى'." },
+  { year: "1975", event: "رحيل الهرم الرابع عن عالمنا وحزن عميق في أرجاء الوطن العربي." }
+];
+
+function Timeline() {
+  return (
+    <section className="section timeline-section">
+      <h2 className="title-gold">محطات في حياة الكوكب</h2>
+      <div className="timeline-grid">
+        {milstones.map((item, index) => (
+          <div key={index} className="timeline-item">
+            <span className="year">{item.year}</span>
+            <p>{item.event}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+const songs = [
+  { title: "إنت عمري", poet: "أحمد شفيق كامل", composer: "محمد عبد الوهاب" },
+  { title: "الأطلال", poet: "إبراهيم ناجي", composer: "رياض السنباطي" },
+  { title: "ألف ليلة وليلة", poet: "مرسي جميل عزيز", composer: "بليغ حمدي" },
+  { title: "أمل حياتي", poet: "أحمد شفيق كامل", composer: "محمد عبد الوهاب" },
+  { title: "سيرة الحب", poet: "مرسي جميل عزيز", composer: "بليغ حمدي" },
+  { title: "فات الميعاد", poet: "مرسي جميل عزيز", composer: "بليغ حمدي" }
+];
+
+function Songs() {
+  return (
+    <section className="section songs-section">
+      <h2 className="title-gold">أيقونات غنائية</h2>
+      <div className="songs-grid">
+        {songs.map((song, index) => (
+          <div key={index} className="song-card">
+            <h3>{song.title}</h3>
+            <p>كلمات: {song.poet}</p>
+            <p>ألحان: {song.composer}</p>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+function Legacy() {
+  return (
+    <section className="section legacy-section">
+      <h2 className="title-gold">الإرث والخلود</h2>
+      <div className="quote-box">
+        <blockquote>
+          "ثُم تَمُرّ الأَيَّام، وتَبقى أُم كُلثُوم هِي الصَّوت الذي لَا يُهرم، والمَدرسة التي يَتعلّم مِنهَا العُشّاق كَيفَ يَكُون الحُب، وتَتعلّم مِنهَا الشُّعوب كَيفَ يَكُون الانتماء."
+        </blockquote>
+      </div>
+      <div className="legacy-text">
+        <p>
+          رحلت أم كلثوم بجسدها في 3 فبراير 1975، وشيع جنازتها الملايين في مشهد مهيب لم تشهده مصر إلا في جنازة جمال عبد الناصر. لم تكن مجرد مغنية، بل كانت رمزاً وطنياً وقوة ناعمة جابت العالم لترمم جراح وطنها بصوتها.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+
+function Footer() {
+  return (
+    <footer className="footer">
+      <p>جميع الحقوق محفوظة - تكريماً لذكرى سيدة الغناء العربي</p>
+      <p>© ٢٠٢٤ موقع أم كلثوم التعليمي</p>
+    </footer>
+  );
+}
+
+
+
+
+
+
+
+
+
+function App() {
   return (
     <div className="container">
       <Hero />
@@ -197,8 +325,26 @@ var App = function App() {
   );
 }
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(React.createElement(App));
+
+
+
+const rootElement = document.getElementById("root");
+const root = createRoot(rootElement);
+
+root.render(
+  <StrictMode>
+    <App />
+  </StrictMode>
+);
+
+try {
+  const rootElement = document.getElementById('root');
+  if (!rootElement) throw new Error('Missing #root element');
+  if (typeof App !== 'function' && typeof App !== 'object') throw new Error('App component was not exported correctly');
+  ReactDOM.createRoot(rootElement).render(React.createElement(App));
+} catch (error) {
+  document.getElementById('root').innerHTML = '<pre class="webly-fallback" dir="ltr" style="white-space:pre-wrap;color:#b91c1c">' + (error && error.stack ? error.stack : error) + '</pre>';
+}
 </script>
 </body>
 </html>
